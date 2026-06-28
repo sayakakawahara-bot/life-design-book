@@ -652,6 +652,9 @@
 
   <div class="sparkle-line">✦ &nbsp; 今日も素敵な一日を &nbsp; ✦</div>
 
+  <!-- 今日のメッセージ -->
+  <div id="todayMessage"></div>
+
   <div class="theme-card">
     <div class="theme-title">— 私の人生テーマ —</div>
     <div class="theme-text">
@@ -1620,6 +1623,108 @@ function updateTopProgress() {
 }
 
 // ═══════════════════════════════════
+// TODAY'S MESSAGE
+// ═══════════════════════════════════
+const HABIT_NAMES = {
+  'habit-朝散歩':     '朝散歩',
+  'habit-ラジオ英会話': 'ラジオ英会話',
+  'habit-英語に触れる': '英語に触れる',
+  'habit-読書':       '読書',
+  'habit-ストレッチ':  'ストレッチ',
+  'habit-発音講座':    '発音講座',
+  'habit-ジャーナリング': 'ジャーナリング',
+  'habit-感謝を書く':  '感謝を書く',
+  'habit-自分を褒める': '自分を褒める',
+};
+
+function buildTodayMessages() {
+  const messages = [];
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const today = now.getDate();
+
+  // 月末アラート
+  const daysLeft = daysInMonth - today;
+  if (daysLeft <= 3) {
+    const label = daysLeft === 0 ? '今日が月末です！' : `月末まであと${daysLeft}日！`;
+    messages.push({
+      icon: '📊',
+      color: 'var(--gold)',
+      bg: 'var(--gold-pale)',
+      border: 'var(--gold)',
+      text: `${label} 今月の月分析・チャッピーへの振り返りをしましょう 🌸`,
+      action: `onclick="showSection('questions', document.querySelectorAll('.nav-btn')[3]); setTimeout(()=>switchJournalTab('monthly',document.getElementById('jtab-monthly')),100)"`,
+      actionLabel: '月分析を開く →'
+    });
+  }
+
+  // 昨日できなかった習慣
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const yKey = 'habits_' + yesterday.toISOString().slice(0, 10);
+  const yData = JSON.parse(localStorage.getItem(yKey) || '{}');
+
+  // 昨日のデータがある（=昨日アプリを使った）場合だけ表示
+  if (Object.keys(yData).length > 0) {
+    const missed = Object.keys(HABIT_NAMES).filter(k => !yData[k]);
+    if (missed.length > 0 && missed.length <= 4) {
+      const names = missed.map(k => HABIT_NAMES[k]).join('・');
+      messages.push({
+        icon: '💪',
+        color: 'var(--pink-muted)',
+        bg: 'var(--pink-light)',
+        border: 'var(--pink)',
+        text: `昨日は「${names}」ができなかったよ。今日こそ一緒にやろう！`,
+        action: `onclick="showSection('habits', document.querySelectorAll('.nav-btn')[4])"`,
+        actionLabel: 'やることを開く →'
+      });
+    } else if (missed.length === 0) {
+      messages.push({
+        icon: '🌟',
+        color: 'var(--gold)',
+        bg: 'var(--gold-pale)',
+        border: 'var(--gold-light)',
+        text: '昨日は全部できた！すごい！今日も続けていこう✨',
+        action: '',
+        actionLabel: ''
+      });
+    }
+  }
+
+  // 表示
+  const el = document.getElementById('todayMessage');
+  if (messages.length === 0) { el.innerHTML = ''; return; }
+
+  el.innerHTML = messages.map(m => `
+    <div style="
+      background:${m.bg};
+      border:1.5px solid ${m.border};
+      border-radius:16px;
+      padding:14px 16px;
+      margin-bottom:12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    ">
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <span style="font-size:20px;flex-shrink:0;">${m.icon}</span>
+        <span style="font-size:13px;color:var(--text-dark);line-height:1.7;">${m.text}</span>
+      </div>
+      ${m.actionLabel ? `<button ${m.action} style="
+        align-self:flex-end;
+        background:none;
+        border:1px solid ${m.border};
+        color:${m.color};
+        border-radius:100px;
+        padding:5px 14px;
+        font-size:12px;
+        font-family:inherit;
+        cursor:pointer;
+      ">${m.actionLabel}</button>` : ''}
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════
 // SPARKLES
 // ═══════════════════════════════════
 function spawnSparkles(el) {
@@ -1748,6 +1853,7 @@ buildWishList();
 updateTopProgress();
 updateMorningDoneUI();
 renderCalendar();
+buildTodayMessages();
 </script>
 </body>
 </html>
