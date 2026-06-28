@@ -780,41 +780,85 @@
 </section>
 
 <!-- ═══════════════════════════════════
-     SECTION 4: 今日の質問
+     SECTION 4: ジャーナリング
 ═══════════════════════════════════ -->
 <section class="section" id="sec-questions">
   <div class="section-header">
-    <h2>💭 今日の自分への質問</h2>
+    <h2>📓 ジャーナリング</h2>
     <p id="questionDate"></p>
   </div>
 
-  <div class="question-item">
-    <div class="question-label">🌸 今日はどんな幸せがあった？</div>
-    <textarea class="question-textarea" id="q1" placeholder="小さな幸せも大切に…"></textarea>
-  </div>
-  <div class="question-item">
-    <div class="question-label">🙏 今日は誰に感謝できた？</div>
-    <textarea class="question-textarea" id="q2" placeholder="感謝の気持ちを言葉に…"></textarea>
-  </div>
-  <div class="question-item">
-    <div class="question-label">⭐ 今日は自分を褒められることは？</div>
-    <textarea class="question-textarea" id="q3" placeholder="どんな小さなことでも…"></textarea>
-  </div>
-  <div class="question-item">
-    <div class="question-label">🌱 今日は子どもの課題を尊重できた？</div>
-    <textarea class="question-textarea" id="q4" placeholder="振り返ってみると…"></textarea>
-  </div>
-  <div class="question-item">
-    <div class="question-label">💪 今日は誰かを勇気づけられた？</div>
-    <textarea class="question-textarea" id="q5" placeholder="どんな形でも…"></textarea>
-  </div>
-  <div class="question-item">
-    <div class="question-label">✨ 今日は私らしく過ごせた？</div>
-    <textarea class="question-textarea" id="q6" placeholder="正直に振り返って…"></textarea>
+  <!-- タブ -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="time-tab active" id="jtab-today" onclick="switchJournalTab('today',this)">✏️ 今日</button>
+    <button class="time-tab" id="jtab-history" onclick="switchJournalTab('history',this)">📖 過去の記録</button>
+    <button class="time-tab" id="jtab-monthly" onclick="switchJournalTab('monthly',this)">📊 月分析</button>
   </div>
 
-  <button class="save-btn" onclick="saveQuestions()">今日の振り返りを保存する ✦</button>
-  <div class="saved-msg" id="questionSaved"></div>
+  <!-- 今日 -->
+  <div id="jpanel-today">
+    <div class="question-item">
+      <div class="question-label">🌸 今日はどんな幸せがあった？</div>
+      <textarea class="question-textarea" id="q1" placeholder="小さな幸せも大切に…"></textarea>
+    </div>
+    <div class="question-item">
+      <div class="question-label">🙏 今日は誰に感謝できた？</div>
+      <textarea class="question-textarea" id="q2" placeholder="感謝の気持ちを言葉に…"></textarea>
+    </div>
+    <div class="question-item">
+      <div class="question-label">⭐ 今日は自分を褒められることは？</div>
+      <textarea class="question-textarea" id="q3" placeholder="どんな小さなことでも…"></textarea>
+    </div>
+    <div class="question-item">
+      <div class="question-label">🌱 今日は子どもの課題を尊重できた？</div>
+      <textarea class="question-textarea" id="q4" placeholder="振り返ってみると…"></textarea>
+    </div>
+    <div class="question-item">
+      <div class="question-label">💪 今日は誰かを勇気づけられた？</div>
+      <textarea class="question-textarea" id="q5" placeholder="どんな形でも…"></textarea>
+    </div>
+    <div class="question-item">
+      <div class="question-label">✨ 今日は私らしく過ごせた？</div>
+      <textarea class="question-textarea" id="q6" placeholder="正直に振り返って…"></textarea>
+    </div>
+    <button class="save-btn" onclick="saveQuestions()">今日の振り返りを保存する ✦</button>
+    <div class="saved-msg" id="questionSaved"></div>
+  </div>
+
+  <!-- 過去の記録 -->
+  <div id="jpanel-history" style="display:none;">
+    <div class="card" style="padding:14px 16px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <button onclick="changeHistoryMonth(-1)" style="background:none;border:none;font-size:20px;color:var(--gold);cursor:pointer;padding:4px 10px;">‹</button>
+        <div id="historyMonthTitle" style="font-size:15px;font-weight:600;color:var(--text-dark);"></div>
+        <button onclick="changeHistoryMonth(1)" style="background:none;border:none;font-size:20px;color:var(--gold);cursor:pointer;padding:4px 10px;">›</button>
+      </div>
+    </div>
+    <div id="historyList"></div>
+    <div id="historyEmpty" style="text-align:center;color:var(--text-light);font-size:14px;padding:40px 0;display:none;">この月の記録はまだありません</div>
+  </div>
+
+  <!-- 月分析 -->
+  <div id="jpanel-monthly" style="display:none;">
+    <div class="card" style="padding:14px 16px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <button onclick="changeAnalysisMonth(-1)" style="background:none;border:none;font-size:20px;color:var(--gold);cursor:pointer;padding:4px 10px;">‹</button>
+        <div id="analysisMonthTitle" style="font-size:15px;font-weight:600;color:var(--text-dark);"></div>
+        <button onclick="changeAnalysisMonth(1)" style="background:none;border:none;font-size:20px;color:var(--gold);cursor:pointer;padding:4px 10px;">›</button>
+      </div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,var(--white),var(--gold-pale));">
+      <div id="analysisSummary" style="font-size:13px;color:var(--text-light);margin-bottom:16px;line-height:1.8;"></div>
+      <div style="font-size:13px;color:var(--gold);margin-bottom:8px;font-weight:600;">✦ 今月の自分へのメッセージ</div>
+      <textarea class="question-textarea" id="monthlyAnalysisNote" placeholder="今月を振り返って…&#10;&#10;よかったこと、気づいたこと、来月に向けて…" style="min-height:140px;"></textarea>
+      <button class="save-btn" onclick="saveMonthlyAnalysis()" style="margin-top:10px;">保存する</button>
+      <div class="saved-msg" id="analysisSaved"></div>
+      <button class="save-btn" onclick="copyMonthlyRecord()" style="margin-top:10px;background:linear-gradient(135deg,var(--text-dark),var(--text-mid));">
+        📋 今月の記録をチャッピーに貼り付け用コピー
+      </button>
+      <div class="saved-msg" id="copySaved"></div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════════════════════════════════
@@ -1167,8 +1211,15 @@ function switchTimeTab(name, btn) {
 // ═══════════════════════════════════
 // QUESTIONS
 // ═══════════════════════════════════
+const Q_LABELS = ['','🌸 幸せ','🙏 感謝','⭐ 自分を褒める','🌱 子どもの課題','💪 勇気づけ','✨ 私らしく'];
+
+function jstDateStr() {
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  return jst.toISOString().slice(0, 10);
+}
+
 function saveQuestions() {
-  const dateKey = 'questions_' + new Date().toISOString().slice(0,10);
+  const dateKey = 'questions_' + jstDateStr();
   const data = {};
   for (let i = 1; i <= 6; i++) data['q'+i] = document.getElementById('q'+i).value;
   localStorage.setItem(dateKey, JSON.stringify(data));
@@ -1176,11 +1227,193 @@ function saveQuestions() {
 }
 
 function loadQuestions() {
-  const dateKey = 'questions_' + new Date().toISOString().slice(0,10);
+  const dateKey = 'questions_' + jstDateStr();
   const data = JSON.parse(localStorage.getItem(dateKey) || '{}');
   for (let i = 1; i <= 6; i++) {
     if (data['q'+i]) document.getElementById('q'+i).value = data['q'+i];
   }
+}
+
+// ── Journal tabs ──
+function switchJournalTab(name, btn) {
+  document.querySelectorAll('#sec-questions .time-tab').forEach(t => t.classList.remove('active'));
+  ['today','history','monthly'].forEach(n => {
+    document.getElementById('jpanel-' + n).style.display = 'none';
+  });
+  btn.classList.add('active');
+  document.getElementById('jpanel-' + name).style.display = 'block';
+  if (name === 'history') renderHistory();
+  if (name === 'monthly') renderMonthlyAnalysis();
+}
+
+// ── 過去の記録 ──
+let historyYear, historyMonth;
+
+function getAllQuestionKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('questions_')) keys.push(k);
+  }
+  return keys.sort().reverse();
+}
+
+function changeHistoryMonth(delta) {
+  historyMonth += delta;
+  if (historyMonth > 11) { historyMonth = 0; historyYear++; }
+  if (historyMonth < 0)  { historyMonth = 11; historyYear--; }
+  renderHistory();
+}
+
+function renderHistory() {
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  if (historyYear === undefined) { historyYear = now.getFullYear(); historyMonth = now.getMonth(); }
+
+  const prefix = `${historyYear}-${String(historyMonth + 1).padStart(2,'0')}`;
+  document.getElementById('historyMonthTitle').textContent = `${historyYear}年 ${historyMonth + 1}月`;
+
+  const keys = getAllQuestionKeys().filter(k => k.includes(prefix));
+  const list = document.getElementById('historyList');
+  const empty = document.getElementById('historyEmpty');
+  list.innerHTML = '';
+
+  if (keys.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  keys.forEach(key => {
+    const date = key.replace('questions_', '');
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    const hasContent = Object.values(data).some(v => v && v.trim());
+    if (!hasContent) return;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '12px';
+
+    const d = new Date(date + 'T00:00:00+09:00');
+    const days = ['日','月','火','水','木','金','土'];
+    const dateLabel = `${d.getMonth()+1}月${d.getDate()}日（${days[d.getDay()]}）`;
+
+    let html = `<div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--beige);">${dateLabel}</div>`;
+    for (let i = 1; i <= 6; i++) {
+      if (data['q'+i] && data['q'+i].trim()) {
+        html += `<div style="margin-bottom:10px;">
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:3px;">${Q_LABELS[i]}</div>
+          <div style="font-size:14px;color:var(--text-dark);line-height:1.7;">${data['q'+i].replace(/\n/g,'<br>')}</div>
+        </div>`;
+      }
+    }
+    card.innerHTML = html;
+    list.appendChild(card);
+  });
+}
+
+// ── 月分析 ──
+let analysisYear, analysisMonth;
+
+function changeAnalysisMonth(delta) {
+  analysisMonth += delta;
+  if (analysisMonth > 11) { analysisMonth = 0; analysisYear++; }
+  if (analysisMonth < 0)  { analysisMonth = 11; analysisYear--; }
+  renderMonthlyAnalysis();
+}
+
+function renderMonthlyAnalysis() {
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  if (analysisYear === undefined) { analysisYear = now.getFullYear(); analysisMonth = now.getMonth(); }
+
+  const prefix = `${analysisYear}-${String(analysisMonth + 1).padStart(2,'0')}`;
+  document.getElementById('analysisMonthTitle').textContent = `${analysisYear}年 ${analysisMonth + 1}月`;
+
+  const keys = getAllQuestionKeys().filter(k => k.includes(prefix));
+  const dayCount = keys.filter(k => {
+    const d = JSON.parse(localStorage.getItem(k) || '{}');
+    return Object.values(d).some(v => v && v.trim());
+  }).length;
+
+  // 習慣達成数も集計
+  let habitDays = 0;
+  const morningDays = getMorningDays().filter(d => d.startsWith(prefix)).length;
+  for (let d = 1; d <= 31; d++) {
+    const iso = `${prefix}-${String(d).padStart(2,'0')}`;
+    if (localStorage.getItem('habits_' + iso)) habitDays++;
+  }
+
+  const summary = document.getElementById('analysisSummary');
+  summary.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div style="text-align:center;background:var(--white);border-radius:12px;padding:12px 4px;border:1px solid var(--gold-pale);">
+        <div style="font-size:22px;font-weight:700;color:var(--gold);">${dayCount}</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">記録した日</div>
+      </div>
+      <div style="text-align:center;background:var(--white);border-radius:12px;padding:12px 4px;border:1px solid var(--gold-pale);">
+        <div style="font-size:22px;font-weight:700;color:var(--pink-muted);">${morningDays}</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">朝の言葉</div>
+      </div>
+      <div style="text-align:center;background:var(--white);border-radius:12px;padding:12px 4px;border:1px solid var(--gold-pale);">
+        <div style="font-size:22px;font-weight:700;color:var(--gold);">${habitDays}</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">習慣達成日</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);text-align:center;">↓ 今月を振り返ってメモを残しましょう</div>
+  `;
+
+  const noteKey = 'monthly_analysis_' + prefix;
+  const saved = localStorage.getItem(noteKey) || '';
+  document.getElementById('monthlyAnalysisNote').value = saved;
+  document.getElementById('monthlyAnalysisNote').dataset.key = noteKey;
+}
+
+function saveMonthlyAnalysis() {
+  const key = document.getElementById('monthlyAnalysisNote').dataset.key;
+  if (!key) return;
+  localStorage.setItem(key, document.getElementById('monthlyAnalysisNote').value);
+  showSaved('analysisSaved');
+}
+
+function copyMonthlyRecord() {
+  const prefix = `${analysisYear}-${String(analysisMonth + 1).padStart(2,'0')}`;
+  const keys = getAllQuestionKeys().filter(k => k.includes(prefix));
+  const monthLabel = `${analysisYear}年${analysisMonth + 1}月`;
+
+  let text = `【${monthLabel}の振り返り記録】\n`;
+  text += `記録日数: ${keys.length}日\n\n`;
+  text += `━━━━━━━━━━━━━━━━\n\n`;
+
+  keys.forEach(key => {
+    const date = key.replace('questions_', '');
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    const hasContent = Object.values(data).some(v => v && v.trim());
+    if (!hasContent) return;
+
+    const d = new Date(date + 'T00:00:00+09:00');
+    const days = ['日','月','火','水','木','金','土'];
+    text += `▶ ${d.getMonth()+1}月${d.getDate()}日（${days[d.getDay()]}）\n`;
+    const labels = ['','🌸 幸せ','🙏 感謝','⭐ 自分を褒める','🌱 子どもの課題','💪 勇気づけ','✨ 私らしく'];
+    for (let i = 1; i <= 6; i++) {
+      if (data['q'+i] && data['q'+i].trim()) {
+        text += `${labels[i]}：${data['q'+i]}\n`;
+      }
+    }
+    text += '\n';
+  });
+
+  const myNote = localStorage.getItem('monthly_analysis_' + prefix);
+  if (myNote) {
+    text += `━━━━━━━━━━━━━━━━\n`;
+    text += `【自分メモ】\n${myNote}\n`;
+  }
+
+  text += `\n━━━━━━━━━━━━━━━━\n`;
+  text += `以上が${monthLabel}の記録です。\nこの内容を分析して、気づいたこと・成長・来月へのアドバイスを教えてください。`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showSaved('copySaved');
+    document.getElementById('copySaved').textContent = '📋 コピーしました！チャッピーに貼り付けてね';
+  });
 }
 
 // ═══════════════════════════════════
