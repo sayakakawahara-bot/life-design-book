@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Life Design Book">
+<title>Sayaka's Life Design Book</title>
+<style>
+  :root {
+    --white: #FFFCF8;
+    --cream: #FAF6EF;
+    --beige: #F2EAD9;
+    --beige-dark: #E8DCC8;
+    --pink-light: #F9EDE8;
+    --pink: #E8C4B8;
+    --pink-muted: #D4A59A;
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --gold-pale: #F5EDD4;
+    --text-dark: #5C4A3A;
+    --text-mid: #7A6555;
+    --text-light: #A08878;
+    --shadow: rgba(201, 169, 110, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── Navigation ── */
+  .nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(255,252,248,0.97);
+    border-top: 1px solid var(--beige-dark);
+    display: flex;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -2px 16px var(--shadow);
+  }
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 2px 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 9px;
+    color: var(--text-light);
+    font-family: inherit;
+    gap: 3px;
+    transition: color 0.2s;
+  }
+  .nav-btn.active { color: var(--gold); }
+  .nav-btn .icon { font-size: 18px; line-height: 1; }
+
+  /* ── Sections ── */
+  .section { display: none; padding: 20px 16px 100px; min-height: 100vh; }
+  .section.active { display: block; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px var(--shadow);
+    border: 1px solid var(--gold-pale);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    color: var(--gold);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-light), transparent);
+  }
+
+  /* ══════════════════════════
+     ① TOP
+  ══════════════════════════ */
+  .top-hero {
+    text-align: center;
+    padding: 40px 20px 28px;
+    background: linear-gradient(160deg, var(--white) 0%, var(--pink-light) 50%, var(--gold-pale) 100%);
+    border-radius: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 30px var(--shadow);
+    border: 1px solid var(--gold-light);
+    position: relative;
+    overflow: hidden;
+  }
+  .top-hero::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, var(--gold-pale) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .top-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, var(--pink-light) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .top-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+  .top-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 8px;
+    letter-spacing: 0.1em;
+    position: relative;
+    z-index: 1;
+  }
+  .gold-text { color: var(--gold); }
+
+  .theme-card {
+    background: linear-gradient(135deg, var(--white), var(--pink-light));
+    border-radius: 20px;
+    padding: 28px 22px;
+    border: 1px solid var(--pink);
+    box-shadow: 0 4px 20px rgba(212,165,154,0.15);
+  }
+  .theme-title {
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .theme-text {
+    font-size: 15px;
+    line-height: 2.2;
+    color: var(--text-dark);
+    text-align: center;
+  }
+  .theme-highlight {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .date-time-card {
+    background: linear-gradient(135deg, var(--text-dark), var(--text-mid));
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .current-time { font-size: 36px; font-weight: 300; letter-spacing: 0.05em; }
+  .current-date { font-size: 13px; color: var(--gold-light); margin-top: 4px; letter-spacing: 0.1em; }
+  .greeting { font-size: 14px; color: var(--beige); margin-top: 8px; }
+
+  /* ══════════════════════════
+     ② 毎朝読む
+  ══════════════════════════ */
+  .morning-affirmation {
+    font-size: 16px;
+    line-height: 2.8;
+    color: var(--text-dark);
+    text-align: center;
+    padding: 8px 0;
+  }
+  .affirmation-item {
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--beige-dark);
+    transition: background 0.2s;
+  }
+  .affirmation-item:last-child { border-bottom: none; }
+  .affirmation-item.glow {
+    animation: glow-flash 0.6s ease;
+  }
+  @keyframes glow-flash {
+    0% { background: transparent; }
+    30% { background: var(--gold-pale); border-radius: 8px; }
+    100% { background: transparent; }
+  }
+
+  /* ══════════════════════════
+     ③ 考え方
+  ══════════════════════════ */
+  .philosophy-quote {
+    font-size: 15px;
+    line-height: 2.4;
+    color: var(--text-dark);
+    text-align: center;
+  }
+  .philosophy-key {
+    background: var(--gold-pale);
+    border-left: 3px solid var(--gold);
+    padding: 12px 16px;
+    border-radius: 0 12px 12px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 16px 0;
+    font-style: italic;
+  }
+
+  /* ══════════════════════════
+     ④ 今日の質問
+  ══════════════════════════ */
+  .question-item {
+    background: var(--white);
+    border: 1px solid var(--gold-pale);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+  .question-label {
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .question-textarea {
+    width: 100%;
+    border: 1px solid var(--beige-dark);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: var(--cream);
+    resize: none;
+    min-height: 70px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .question-textarea:focus { border-color: var(--gold); }
+  .save-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--gold), var(--pink-muted));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(201,169,110,0.3);
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .save-btn:active { opacity: 0.85; transform: scale(0.99); }
+  .saved-msg {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gold);
+    margin-top: 8px;
+    min-height: 20px;
+    transition: opacity 0.4s;
+  }
+
+  /* ══════════════════════════
+     ⑤ 習慣
+  ══════════════════════════ */
+  .habit-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--beige);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .habit-item:last-child { border-bottom: none; }
+  .habit-check {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s;
+    background: transparent;
+  }
+  .habit-check.done {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .habit-check.done::after { content: '✓'; color: white; font-size: 14px; }
+  .habit-label {
+    font-size: 15px;
+    color: var(--text-dark);
+    transition: color 0.2s;
+    flex: 1;
+  }
+  .habit-item.done .habit-label {
+    color: var(--text-light);
+    text-decoration: line-through;
+    text-decoration-color: var(--pink-muted);
+  }
+  .habit-streak { font-size: 11px; color: var(--gold); }
+
+  .progress-bar-wrap {
+    background: var(--beige);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+    margin: 16px 0 8px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--pink), var(--gold));
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .reset-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background: transparent;
+    color: var(--text-light);
+    border: 1px solid var(--beige-dark);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+  .reset-btn:active { background: var(--beige); }
+
+  /* ══════════════════════════
+     ⑥ 欲望リスト
+  ══════════════════════════ */
+  .wish-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .wish-stat {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 14px 8px;
+    text-align: center;
+    border: 1px solid var(--gold-pale);
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+  .wish-stat-num { font-size: 24px; font-weight: 700; color: var(--gold); }
+  .wish-stat-label { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+  .category-section { margin-bottom: 12px; }
+  .category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, var(--white), var(--pink-light));
+    border-radius: 16px;
+    border: 1px solid var(--pink);
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(212,165,154,0.1);
+  }
+  .category-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+  .category-badge {
+    font-size: 11px;
+    color: var(--gold);
+    background: var(--gold-pale);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .category-arrow {
+    font-size: 12px;
+    color: var(--text-light);
+    transition: transform 0.3s;
+  }
+  .category-header.open .category-arrow { transform: rotate(180deg); }
+  .category-items { display: none; padding: 8px 0; }
+  .category-items.open { display: block; }
+
+  .wish-item {
+    background: var(--white);
+    border-radius: 14px;
+    margin: 8px 0;
+    border: 1px solid var(--beige-dark);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .wish-item.completed {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, var(--white), var(--gold-pale));
+  }
+  .wish-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 14px 14px 14px;
+    cursor: pointer;
+  }
+  .wish-checkbox {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    border: 2px solid var(--beige-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s;
+    background: transparent;
+  }
+  .wish-item.completed .wish-checkbox {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .wish-item.completed .wish-checkbox::after { content: '✓'; color: white; font-size: 13px; }
+  .wish-text {
+    font-size: 14px;
+    color: var(--text-dark);
+    flex: 1;
+    line-height: 1.5;
+  }
+  .wish-item.completed .wish-text {
+    color: var(--text-light);
+    text-decoration: line-through;
+    text-decoration-color: var(--gold);
+  }
+  .wish-expand-btn {
+    font-size: 11px;
+    color: var(--text-light);
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: var(--cream);
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .wish-detail {
+    display: none;
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--beige);
+    margin-top: 0;
+    padding-top: 12px;
+    background: var(--cream);
+  }
+  .wish-detail.open { display: block; }
+  .detail-row { margin-bottom: 10px; }
+  .detail-label { font-size: 11px; color: var(--gold); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .detail-input {
+    width: 100%;
+    border: 1px solid var(--beige-dark);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-dark);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .detail-input:focus { border-color: var(--gold); }
+  .photo-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border: 1.5px dashed var(--beige-dark);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .photo-upload-label:hover { border-color: var(--gold); color: var(--gold); }
+  .photo-upload-input { display: none; }
+  .photo-preview {
+    margin-top: 8px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+  }
+  .photo-preview img { width: 100%; display: block; }
+
+  /* ── Final Page ── */
+  .final-hero {
+    text-align: center;
+    padding: 40px 20px 36px;
+    background: linear-gradient(160deg, var(--text-dark) 0%, #3D2E22 100%);
+    border-radius: 24px;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .final-hero::before {
+    content: '✦';
+    position: absolute;
+    font-size: 80px;
+    color: rgba(201,169,110,0.1);
+    top: 10px; right: 10px;
+  }
+  .final-hero::after {
+    content: '✦';
+    position: absolute;
+    font-size: 60px;
+    color: rgba(201,169,110,0.08);
+    bottom: 10px; left: 10px;
+  }
+  .final-text {
+    font-size: 16px;
+    line-height: 2.6;
+    position: relative;
+    z-index: 1;
+  }
+  .final-gold { color: var(--gold-light); }
+
+  /* ── Utilities ── */
+  .section-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-top: 8px;
+  }
+  .section-header h2 {
+    font-size: 18px;
+    color: var(--text-dark);
+    letter-spacing: 0.1em;
+  }
+  .section-header p {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+  }
+  .sparkle-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--gold);
+    font-size: 12px;
+    margin: 12px 0;
+    letter-spacing: 0.15em;
+  }
+  .tag {
+    display: inline-block;
+    background: var(--gold-pale);
+    color: var(--gold);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .wish-date-display {
+    font-size: 11px;
+    color: var(--gold);
+    text-align: right;
+    padding: 0 14px 10px;
+    display: none;
+  }
+  .wish-item.completed .wish-date-display { display: block; }
+
+  /* Floating sparkles */
+  @keyframes float-up {
+    0% { opacity: 0; transform: translateY(0) scale(0); }
+    30% { opacity: 1; transform: translateY(-15px) scale(1); }
+    100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
+  }
+  .sparkle-particle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 16px;
+    animation: float-up 1s ease forwards;
+    z-index: 9999;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    /* respect system but keep light aesthetic */
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     SECTION 1: TOP
+═══════════════════════════════════ -->
+<section class="section active" id="sec-top">
+  <div class="date-time-card">
+    <div class="current-time" id="clock">--:--</div>
+    <div class="current-date" id="dateDisplay"></div>
+    <div class="greeting" id="greetingText"></div>
+  </div>
+
+  <div class="top-hero">
+    <div class="top-title">🌸 Sayaka's Life Design Book 🌸</div>
+    <div class="top-subtitle">〜 私らしく幸せに生きる人生設計図 〜</div>
+  </div>
+
+  <div class="sparkle-line">✦ &nbsp; 今日も素敵な一日を &nbsp; ✦</div>
+
+  <div class="theme-card">
+    <div class="theme-title">— 私の人生テーマ —</div>
+    <div class="theme-text">
+      私は、<br><br>
+      家族や大切な人と<span class="theme-highlight">笑顔で過ごしながら</span>、<br><br>
+      <span class="theme-highlight">学び続け</span>、<br><br>
+      <span class="theme-highlight">心地よい暮らし</span>を整え、<br><br>
+      英語と教育を通して<br>誰かの役に立つ人生を生きる。<br><br>
+      そして、<br><br>
+      <span class="theme-highlight">自分自身も大切にし</span>、<br><br>
+      周りの人も幸せにできる人になる。
+    </div>
+  </div>
+
+  <div class="divider">✦</div>
+
+  <div class="card" style="text-align:center;">
+    <div style="font-size:13px;color:var(--text-light);margin-bottom:12px;letter-spacing:0.1em;">今日の進捗</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="topProgressBar" style="width:0%"></div></div>
+    <div class="progress-label">
+      <span id="topProgressText">習慣 0/9</span>
+      <span id="topWishText">達成 0/100</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 2: 毎朝読む
+═══════════════════════════════════ -->
+<section class="section" id="sec-morning">
+  <div class="section-header">
+    <h2>🌷 毎朝読むページ</h2>
+    <p>声に出して読んでみましょう</p>
+  </div>
+
+  <div class="card">
+    <div id="affirmations">
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は今ある幸せに感謝します。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は毎日少しずつ成長しています。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は焦らなくて大丈夫。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は自分を信じます。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は学び続けます。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は挑戦を楽しみます。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は毎日自分を褒めます。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は今日も笑顔で過ごします。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は子どもの人生を信じます。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は子どもの課題を奪いません。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は安心して挑戦できる環境を整えます。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は共同体感覚を大切にします。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は家族も、自分も、大切な人も幸せにします。</div></div>
+      <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は今日も私らしく生きます。</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 3: 考え方
+═══════════════════════════════════ -->
+<section class="section" id="sec-philosophy">
+  <div class="section-header">
+    <h2>🌿 私が大切にしたい考え方</h2>
+    <p>アドラー心理学</p>
+  </div>
+
+  <div class="card">
+    <div class="tag" style="margin-bottom:16px;">Adler Psychology</div>
+    <div class="philosophy-key">「これは誰の課題だろう？」</div>
+    <div class="philosophy-quote">
+      子どもの人生は<br>子どものもの。<br><br>
+      困ることも、<br>
+      失敗することも、<br>
+      子ども自身の大切な学び。<br><br>
+      私は先回りして助けるのではなく、<br><br>
+      <strong>安心して挑戦できる<br>環境を整える。</strong>
+    </div>
+
+    <div class="divider">✦</div>
+
+    <div class="philosophy-quote">
+      私は子どもを<strong>信じる</strong>。<br><br>
+      <strong>勇気づける</strong>。<br><br>
+      答えを与えるのではなく、<br><br>
+      考えられる環境を作る。<br><br>
+      私自身も学び続ける。
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,var(--white),var(--pink-light));">
+    <div style="font-size:13px;color:var(--gold);margin-bottom:12px;letter-spacing:0.1em;">✦ 今日の心がけメモ</div>
+    <textarea class="question-textarea" id="philosophyNote" placeholder="今日気づいたことを書いてみましょう…" style="min-height:100px;"></textarea>
+    <button class="save-btn" onclick="saveNote('philosophyNote','philoSaved')">保存する</button>
+    <div class="saved-msg" id="philoSaved"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 4: 今日の質問
+═══════════════════════════════════ -->
+<section class="section" id="sec-questions">
+  <div class="section-header">
+    <h2>💭 今日の自分への質問</h2>
+    <p id="questionDate"></p>
+  </div>
+
+  <div class="question-item">
+    <div class="question-label">🌸 今日はどんな幸せがあった？</div>
+    <textarea class="question-textarea" id="q1" placeholder="小さな幸せも大切に…"></textarea>
+  </div>
+  <div class="question-item">
+    <div class="question-label">🙏 今日は誰に感謝できた？</div>
+    <textarea class="question-textarea" id="q2" placeholder="感謝の気持ちを言葉に…"></textarea>
+  </div>
+  <div class="question-item">
+    <div class="question-label">⭐ 今日は自分を褒められることは？</div>
+    <textarea class="question-textarea" id="q3" placeholder="どんな小さなことでも…"></textarea>
+  </div>
+  <div class="question-item">
+    <div class="question-label">🌱 今日は子どもの課題を尊重できた？</div>
+    <textarea class="question-textarea" id="q4" placeholder="振り返ってみると…"></textarea>
+  </div>
+  <div class="question-item">
+    <div class="question-label">💪 今日は誰かを勇気づけられた？</div>
+    <textarea class="question-textarea" id="q5" placeholder="どんな形でも…"></textarea>
+  </div>
+  <div class="question-item">
+    <div class="question-label">✨ 今日は私らしく過ごせた？</div>
+    <textarea class="question-textarea" id="q6" placeholder="正直に振り返って…"></textarea>
+  </div>
+
+  <button class="save-btn" onclick="saveQuestions()">今日の振り返りを保存する ✦</button>
+  <div class="saved-msg" id="questionSaved"></div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 5: 習慣
+═══════════════════════════════════ -->
+<section class="section" id="sec-habits">
+  <div class="section-header">
+    <h2>☀️ 今日の習慣</h2>
+    <p>一つひとつ、丁寧に</p>
+  </div>
+
+  <div class="card">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="habitProgressBar" style="width:0%"></div></div>
+    <div class="progress-label">
+      <span>今日の達成</span>
+      <span id="habitProgressText">0 / 9</span>
+    </div>
+
+    <div id="habitList">
+      <div class="habit-item" onclick="toggleHabit(this,'habit0')" data-id="habit0">
+        <div class="habit-check"></div>
+        <div class="habit-label">📓 ジャーナリング</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit1')" data-id="habit1">
+        <div class="habit-check"></div>
+        <div class="habit-label">🎤 発音講座</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit2')" data-id="habit2">
+        <div class="habit-check"></div>
+        <div class="habit-label">📻 ラジオ英会話</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit3')" data-id="habit3">
+        <div class="habit-check"></div>
+        <div class="habit-label">🗣 英語に触れる</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit4')" data-id="habit4">
+        <div class="habit-check"></div>
+        <div class="habit-label">📚 読書</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit5')" data-id="habit5">
+        <div class="habit-check"></div>
+        <div class="habit-label">🌅 朝散歩</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit6')" data-id="habit6">
+        <div class="habit-check"></div>
+        <div class="habit-label">🧘 ストレッチ</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit7')" data-id="habit7">
+        <div class="habit-check"></div>
+        <div class="habit-label">💖 自分を褒める</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit8')" data-id="habit8">
+        <div class="habit-check"></div>
+        <div class="habit-label">🙏 感謝を書く</div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetHabits()">今日の習慣をリセット</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 6: 欲望リスト
+═══════════════════════════════════ -->
+<section class="section" id="sec-wishlist">
+  <div class="section-header">
+    <h2>🌟 欲望リスト100</h2>
+    <p>夢を叶えていこう</p>
+  </div>
+
+  <div class="wish-stats">
+    <div class="wish-stat">
+      <div class="wish-stat-num" id="statTotal">100</div>
+      <div class="wish-stat-label">total</div>
+    </div>
+    <div class="wish-stat">
+      <div class="wish-stat-num" id="statDone">0</div>
+      <div class="wish-stat-label">達成</div>
+    </div>
+    <div class="wish-stat">
+      <div class="wish-stat-num" id="statPercent">0%</div>
+      <div class="wish-stat-label">達成率</div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap" style="margin-bottom:20px;">
+    <div class="progress-bar-fill" id="wishProgressBar" style="width:0%"></div>
+  </div>
+
+  <div id="wishCategories"></div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 7: 最後のページ
+═══════════════════════════════════ -->
+<section class="section" id="sec-final">
+  <div class="section-header">
+    <h2>🕊 私へのメッセージ</h2>
+  </div>
+
+  <div class="final-hero">
+    <div class="final-text">
+      私は、<br><br>
+      誰かと比べるために生きるのではなく、<br><br>
+      <span class="final-gold">昨日の私より<br>少し幸せになるために生きる。</span><br><br>
+      家族を幸せにするために、<br><br>
+      <span class="final-gold">まず私自身が幸せでいる。</span><br><br>
+      私は、<br><br>
+      毎日少しずつ、<br><br>
+      <span class="final-gold">理想の人生を育てていく。</span>
+    </div>
+  </div>
+
+  <div class="divider" style="margin:24px 0;">✦ ✦ ✦</div>
+
+  <div class="card" style="text-align:center;">
+    <div style="font-size:13px;color:var(--text-light);margin-bottom:8px;">今日も</div>
+    <div style="font-size:18px;color:var(--text-dark);line-height:1.8;">
+      よく頑張りました。<br>
+      <span style="color:var(--gold);">あなたは素晴らしい。</span>
+    </div>
+    <div style="font-size:24px;margin-top:12px;">🌸</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     BOTTOM NAVIGATION
+═══════════════════════════════════ -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('top',this)">
+    <span class="icon">🏠</span>TOP
+  </button>
+  <button class="nav-btn" onclick="showSection('morning',this)">
+    <span class="icon">🌷</span>朝の言葉
+  </button>
+  <button class="nav-btn" onclick="showSection('philosophy',this)">
+    <span class="icon">🌿</span>考え方
+  </button>
+  <button class="nav-btn" onclick="showSection('questions',this)">
+    <span class="icon">💭</span>振り返り
+  </button>
+  <button class="nav-btn" onclick="showSection('habits',this)">
+    <span class="icon">☀️</span>習慣
+  </button>
+  <button class="nav-btn" onclick="showSection('wishlist',this)">
+    <span class="icon">🌟</span>欲望リスト
+  </button>
+  <button class="nav-btn" onclick="showSection('final',this)">
+    <span class="icon">🕊</span>メッセージ
+  </button>
+</nav>
+
+<script>
+// ═══════════════════════════════════
+// DATA
+// ═══════════════════════════════════
+const WISH_DATA = [
+  { cat: '✨ 自分・学び', emoji: '✨', items: [
+    'HOKAの黒いスニーカーを買う','HOKAの可愛い色のスニーカーを買う','MacBookを買う',
+    'ヴァンクリの指輪を手に入れる','ロレックスを手に入れる','Apple Watchを手に入れる',
+    'セリーヌのバッグを手に入れる','ロングネックレスを買う','財布を新しくする',
+    '下着を新調する','メガネを新調する','香水を買う','ワンピースを週1回着る',
+    'お気に入りのワンピースを買う','シミ取り','脱毛','歯科矯正','筋肉をつける',
+    'ストレッチ週3回','マッサージへ行く','美容院を3か月に1回','オンライン英会話',
+    '発音コーチング','香りを学ぶ','英語を自然に話せるようになる',
+    '英語で普通に会話できるようになる','英語でハリー・ポッターを楽しむ',
+    'ピアノを習う','大学へ行き直す','本を月1冊読む','将来は月3冊読む',
+    'モーニングで読書','朝散歩'
+  ]},
+  { cat: '🏠 暮らし', emoji: '🏠', items: [
+    '洗濯機を新調する','壁紙を変える','エアコンを新しくする','キッチンを整理する',
+    'ソファを置く','リフォームする','仕事スペースを作る','ライトを可愛くする',
+    'Alexaで家を自動化する','お気に入りのダイニングセットを買う',
+    '収納上手な人にアドバイスをもらう','耳栓を買う','お気に入りの服だけにする',
+    '掃除を業者さんへ依頼する'
+  ]},
+  { cat: '👨‍👩‍👧‍👦 家族', emoji: '👨‍👩‍👧‍👦', items: [
+    '悠幹の中学受験を親子で楽しむ','ひろの学研','ひろの絵の習い事','ひろの自転車',
+    '家族写真を毎年撮る','月1夫婦ランチ','夫婦時間を大切にする',
+    '子どもたちが大きくなっても旅行する','子どもたちが挑戦できる環境を作る',
+    '親孝行旅行へ行く'
+  ]},
+  { cat: '✈️ 旅行', emoji: '✈️', items: [
+    'ハワイ','イギリス','オーストラリア','福井','広島','京都・奈良','別府温泉',
+    '福岡','新潟','仙台','北海道','ハリー・ポッターの施設','学びの旅行',
+    '自然体験','ビジネスクラス','ようこさんに毎年会いにハワイへ行く'
+  ]},
+  { cat: '💼 仕事・夢', emoji: '💼', items: [
+    '塾代年間100万円を余裕で出せる収入','朝活5時起き','インスタで役立つ発信をする',
+    'MYフォニックスを公立へ広げる','まちこ先生が講演会へ呼ばれる',
+    'ようこさんがセンサリープレイを広める存在になる','北原さんに会う',
+    'まちこ先生、りっちゃん、ようこさんへ恩返しする','NISAを始める'
+  ]},
+  { cat: '💗 心', emoji: '💗', items: [
+    '好きな人たちに囲まれる','毎日笑顔で過ごす','大切な人たちみんなが幸せでいる',
+    '今ある幸せに感謝しながら学び続ける','毎日自分を褒めてご機嫌で過ごす'
+  ]}
+];
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+  if (name === 'top') updateTopProgress();
+}
+
+// ═══════════════════════════════════
+// CLOCK & GREETING
+// ═══════════════════════════════════
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = h + ':' + m;
+
+  const days = ['日','月','火','水','木','金','土'];
+  const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+  document.getElementById('dateDisplay').textContent = dateStr;
+
+  const hour = now.getHours();
+  let greeting = '';
+  if (hour < 6) greeting = '🌙 おやすみなさい';
+  else if (hour < 10) greeting = '🌸 おはようございます、Sayakaさん';
+  else if (hour < 17) greeting = '☀️ こんにちは、Sayakaさん';
+  else greeting = '🌆 お疲れ様です、Sayakaさん';
+  document.getElementById('greetingText').textContent = greeting;
+
+  document.getElementById('questionDate').textContent = dateStr + ' の振り返り';
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+// ═══════════════════════════════════
+// AFFIRMATION GLOW
+// ═══════════════════════════════════
+function glowItem(el) {
+  el.classList.remove('glow');
+  void el.offsetWidth;
+  el.classList.add('glow');
+}
+
+// ═══════════════════════════════════
+// HABITS
+// ═══════════════════════════════════
+const HABIT_COUNT = 9;
+const todayKey = () => 'habits_' + new Date().toISOString().slice(0,10);
+
+function loadHabits() {
+  const data = JSON.parse(localStorage.getItem(todayKey()) || '{}');
+  document.querySelectorAll('.habit-item').forEach(item => {
+    const id = item.dataset.id;
+    if (data[id]) {
+      item.classList.add('done');
+      item.querySelector('.habit-check').classList.add('done');
+    }
+  });
+  updateHabitProgress();
+}
+
+function toggleHabit(item, id) {
+  const data = JSON.parse(localStorage.getItem(todayKey()) || '{}');
+  const isDone = item.classList.contains('done');
+  if (isDone) {
+    item.classList.remove('done');
+    item.querySelector('.habit-check').classList.remove('done');
+    delete data[id];
+  } else {
+    item.classList.add('done');
+    item.querySelector('.habit-check').classList.add('done');
+    data[id] = true;
+    spawnSparkles(item);
+  }
+  localStorage.setItem(todayKey(), JSON.stringify(data));
+  updateHabitProgress();
+  updateTopProgress();
+}
+
+function updateHabitProgress() {
+  const data = JSON.parse(localStorage.getItem(todayKey()) || '{}');
+  const done = Object.keys(data).length;
+  const pct = Math.round(done / HABIT_COUNT * 100);
+  document.getElementById('habitProgressBar').style.width = pct + '%';
+  document.getElementById('habitProgressText').textContent = done + ' / ' + HABIT_COUNT;
+}
+
+function resetHabits() {
+  if (!confirm('今日の習慣をリセットしますか？')) return;
+  localStorage.removeItem(todayKey());
+  document.querySelectorAll('.habit-item').forEach(item => {
+    item.classList.remove('done');
+    item.querySelector('.habit-check').classList.remove('done');
+  });
+  updateHabitProgress();
+  updateTopProgress();
+}
+
+// ═══════════════════════════════════
+// QUESTIONS
+// ═══════════════════════════════════
+function saveQuestions() {
+  const dateKey = 'questions_' + new Date().toISOString().slice(0,10);
+  const data = {};
+  for (let i = 1; i <= 6; i++) data['q'+i] = document.getElementById('q'+i).value;
+  localStorage.setItem(dateKey, JSON.stringify(data));
+  showSaved('questionSaved');
+}
+
+function loadQuestions() {
+  const dateKey = 'questions_' + new Date().toISOString().slice(0,10);
+  const data = JSON.parse(localStorage.getItem(dateKey) || '{}');
+  for (let i = 1; i <= 6; i++) {
+    if (data['q'+i]) document.getElementById('q'+i).value = data['q'+i];
+  }
+}
+
+// ═══════════════════════════════════
+// NOTES
+// ═══════════════════════════════════
+function saveNote(inputId, msgId) {
+  localStorage.setItem('note_' + inputId, document.getElementById(inputId).value);
+  showSaved(msgId);
+}
+
+function loadNotes() {
+  ['philosophyNote'].forEach(id => {
+    const val = localStorage.getItem('note_' + id);
+    if (val) document.getElementById(id).value = val;
+  });
+}
+
+function showSaved(msgId) {
+  const el = document.getElementById(msgId);
+  el.textContent = '✦ 保存しました';
+  el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.textContent = '', 400); }, 2000);
+}
+
+// ═══════════════════════════════════
+// WISH LIST
+// ═══════════════════════════════════
+function getWishData(itemKey) {
+  return JSON.parse(localStorage.getItem('wish_' + itemKey) || '{}');
+}
+function saveWishData(itemKey, data) {
+  localStorage.setItem('wish_' + itemKey, JSON.stringify(data));
+}
+
+function buildWishList() {
+  const container = document.getElementById('wishCategories');
+  let globalIndex = 0;
+
+  WISH_DATA.forEach((cat, ci) => {
+    const section = document.createElement('div');
+    section.className = 'category-section';
+
+    const doneInCat = cat.items.filter((_, ii) => {
+      const key = ci + '_' + ii;
+      return getWishData(key).done;
+    }).length;
+
+    section.innerHTML = `
+      <div class="category-header" onclick="toggleCategory(this)" data-cat="${ci}">
+        <span class="category-title">${cat.cat}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="category-badge">${doneInCat}/${cat.items.length}</span>
+          <span class="category-arrow">▼</span>
+        </div>
+      </div>
+      <div class="category-items" data-cat-items="${ci}"></div>
+    `;
+    container.appendChild(section);
+
+    const itemsContainer = section.querySelector('.category-items');
+    cat.items.forEach((item, ii) => {
+      const key = ci + '_' + ii;
+      const data = getWishData(key);
+      const div = document.createElement('div');
+      div.className = 'wish-item' + (data.done ? ' completed' : '');
+      div.dataset.key = key;
+      div.innerHTML = `
+        <div class="wish-item-header">
+          <div class="wish-checkbox" onclick="toggleWish(event,'${key}')"></div>
+          <div class="wish-text">${item}</div>
+          <button class="wish-expand-btn" onclick="toggleWishDetail(event,'${key}')">詳細</button>
+        </div>
+        ${data.done && data.date ? `<div class="wish-date-display">🎉 ${data.date} 達成</div>` : '<div class="wish-date-display"></div>'}
+        <div class="wish-detail" id="detail_${key}">
+          <div class="detail-row">
+            <div class="detail-label">達成日</div>
+            <input type="date" class="detail-input" id="date_${key}" value="${data.date||''}" onchange="updateWishField('${key}','date',this.value)">
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">メモ</div>
+            <input type="text" class="detail-input" id="memo_${key}" placeholder="メモを書いてね" value="${data.memo||''}" onchange="updateWishField('${key}','memo',this.value)">
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">思い出の写真</div>
+            <label class="photo-upload-label">
+              <span>📷</span> 写真を追加
+              <input type="file" class="photo-upload-input" accept="image/*" onchange="handlePhoto(this,'${key}')">
+            </label>
+            <div class="photo-preview" id="photo_${key}">
+              ${data.photo ? `<img src="${data.photo}" alt="photo">` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+      if (data.photo) div.querySelector('.photo-preview').style.display = 'block';
+      itemsContainer.appendChild(div);
+      globalIndex++;
+    });
+  });
+  updateWishStats();
+}
+
+function toggleCategory(header) {
+  header.classList.toggle('open');
+  const ci = header.dataset.cat;
+  const items = document.querySelector(`[data-cat-items="${ci}"]`);
+  items.classList.toggle('open');
+}
+
+function toggleWish(event, key) {
+  event.stopPropagation();
+  const data = getWishData(key);
+  data.done = !data.done;
+  if (data.done && !data.date) {
+    data.date = new Date().toISOString().slice(0,10);
+    const dateInput = document.getElementById('date_' + key);
+    if (dateInput) dateInput.value = data.date;
+  }
+  saveWishData(key, data);
+
+  const item = document.querySelector(`[data-key="${key}"]`);
+  const dateDisplay = item.querySelector('.wish-date-display');
+  if (data.done) {
+    item.classList.add('completed');
+    item.querySelector('.wish-checkbox').classList.add('done');
+    dateDisplay.textContent = data.date ? `🎉 ${data.date} 達成` : '';
+    spawnSparkles(item);
+  } else {
+    item.classList.remove('completed');
+    item.querySelector('.wish-checkbox').classList.remove('done');
+    dateDisplay.textContent = '';
+  }
+  updateWishStats();
+  updateCategoryBadge(key);
+  updateTopProgress();
+}
+
+function toggleWishDetail(event, key) {
+  event.stopPropagation();
+  const detail = document.getElementById('detail_' + key);
+  detail.classList.toggle('open');
+}
+
+function updateWishField(key, field, value) {
+  const data = getWishData(key);
+  data[field] = value;
+  saveWishData(key, data);
+}
+
+function handlePhoto(input, key) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = getWishData(key);
+    data.photo = e.target.result;
+    saveWishData(key, data);
+    const preview = document.getElementById('photo_' + key);
+    preview.innerHTML = `<img src="${e.target.result}" alt="photo">`;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateCategoryBadge(key) {
+  const ci = key.split('_')[0];
+  const cat = WISH_DATA[parseInt(ci)];
+  const done = cat.items.filter((_, ii) => getWishData(ci + '_' + ii).done).length;
+  const badge = document.querySelector(`[data-cat="${ci}"] .category-badge`);
+  if (badge) badge.textContent = `${done}/${cat.items.length}`;
+}
+
+function updateWishStats() {
+  let total = 0, done = 0;
+  WISH_DATA.forEach((cat, ci) => {
+    cat.items.forEach((_, ii) => {
+      total++;
+      if (getWishData(ci + '_' + ii).done) done++;
+    });
+  });
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statPercent').textContent = Math.round(done/total*100) + '%';
+  document.getElementById('wishProgressBar').style.width = (done/total*100) + '%';
+}
+
+// ═══════════════════════════════════
+// TOP PROGRESS
+// ═══════════════════════════════════
+function updateTopProgress() {
+  const habitData = JSON.parse(localStorage.getItem(todayKey()) || '{}');
+  const habitDone = Object.keys(habitData).length;
+  document.getElementById('topProgressBar').style.width = Math.round(habitDone/HABIT_COUNT*100) + '%';
+  document.getElementById('topProgressText').textContent = `習慣 ${habitDone}/9`;
+
+  let wishDone = 0, wishTotal = 0;
+  WISH_DATA.forEach((cat, ci) => {
+    cat.items.forEach((_, ii) => {
+      wishTotal++;
+      if (getWishData(ci + '_' + ii).done) wishDone++;
+    });
+  });
+  document.getElementById('topWishText').textContent = `達成 ${wishDone}/${wishTotal}`;
+}
+
+// ═══════════════════════════════════
+// SPARKLES
+// ═══════════════════════════════════
+function spawnSparkles(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const emojis = ['✨','🌸','⭐','💖','✦','🌟'];
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const sp = document.createElement('div');
+      sp.className = 'sparkle-particle';
+      sp.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      sp.style.left = (cx + (Math.random()-0.5)*60) + 'px';
+      sp.style.top = cy + 'px';
+      document.body.appendChild(sp);
+      setTimeout(() => sp.remove(), 1000);
+    }, i * 80);
+  }
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+loadHabits();
+loadQuestions();
+loadNotes();
+buildWishList();
+updateTopProgress();
+</script>
+</body>
+</html>
