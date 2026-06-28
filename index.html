@@ -327,6 +327,29 @@
   }
   .habit-streak { font-size: 11px; color: var(--gold); }
 
+  /* ── Time Tabs ── */
+  .time-tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--beige-dark);
+    background: var(--white);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .time-tab.active {
+    background: linear-gradient(135deg, var(--pink-light), var(--gold-pale));
+    border-color: var(--gold);
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+  .time-panel { display: none; }
+  .time-panel.active { display: block; }
+
   .progress-bar-wrap {
     background: var(--beige);
     border-radius: 100px;
@@ -682,6 +705,38 @@
       <div class="affirmation-item" onclick="glowItem(this)"><div class="morning-affirmation">私は今日も私らしく生きます。</div></div>
     </div>
   </div>
+
+  <!-- 今日読みましたボタン -->
+  <div class="card" style="text-align:center; margin-top:0;">
+    <div id="morningDoneMsg" style="font-size:13px;color:var(--text-light);margin-bottom:12px;min-height:20px;"></div>
+    <button class="save-btn" id="morningDoneBtn" onclick="markMorningDone()" style="max-width:280px;margin:0 auto;">
+      🌸 今日読みました
+    </button>
+  </div>
+
+  <!-- カレンダー -->
+  <div class="card" style="margin-top:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <button onclick="changeCalMonth(-1)" style="background:none;border:none;font-size:20px;color:var(--gold);cursor:pointer;padding:4px 10px;">‹</button>
+      <div id="calTitle" style="font-size:15px;color:var(--text-dark);font-weight:600;letter-spacing:0.05em;"></div>
+      <button onclick="changeCalMonth(1)" style="background:none;border:none;font-size:20px;color:var(--gold);cursor:pointer;padding:4px 10px;">›</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;">
+      <div style="font-size:11px;color:var(--pink-muted);padding-bottom:4px;">日</div>
+      <div style="font-size:11px;color:var(--text-light);padding-bottom:4px;">月</div>
+      <div style="font-size:11px;color:var(--text-light);padding-bottom:4px;">火</div>
+      <div style="font-size:11px;color:var(--text-light);padding-bottom:4px;">水</div>
+      <div style="font-size:11px;color:var(--text-light);padding-bottom:4px;">木</div>
+      <div style="font-size:11px;color:var(--text-light);padding-bottom:4px;">金</div>
+      <div style="font-size:11px;color:var(--pink-muted);padding-bottom:4px;">土</div>
+    </div>
+    <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;"></div>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-light);">
+      <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--gold));flex-shrink:0;"></div>
+      朝の言葉を読んだ日
+    </div>
+    <div id="calStreak" style="margin-top:10px;text-align:center;font-size:13px;color:var(--gold);"></div>
+  </div>
 </section>
 
 <!-- ═══════════════════════════════════
@@ -767,58 +822,93 @@
 ═══════════════════════════════════ -->
 <section class="section" id="sec-habits">
   <div class="section-header">
-    <h2>☀️ 今日の習慣</h2>
-    <p>一つひとつ、丁寧に</p>
+    <h2>✅ やること</h2>
+    <p>時間帯ごとにこなしていこう</p>
   </div>
 
-  <div class="card">
-    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="habitProgressBar" style="width:0%"></div></div>
-    <div class="progress-label">
-      <span>今日の達成</span>
-      <span id="habitProgressText">0 / 9</span>
+  <!-- 全体進捗 -->
+  <div class="card" style="padding:16px 20px;">
+    <div class="progress-label" style="margin-bottom:6px;">
+      <span style="font-size:12px;color:var(--text-light);">今日の達成</span>
+      <span id="habitProgressText" style="font-size:12px;color:var(--gold);">0 / 9</span>
     </div>
+    <div class="progress-bar-wrap" style="margin:0;">
+      <div class="progress-bar-fill" id="habitProgressBar" style="width:0%"></div>
+    </div>
+  </div>
 
-    <div id="habitList">
-      <div class="habit-item" onclick="toggleHabit(this,'habit0')" data-id="habit0">
-        <div class="habit-check"></div>
-        <div class="habit-label">📓 ジャーナリング</div>
-      </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit1')" data-id="habit1">
-        <div class="habit-check"></div>
-        <div class="habit-label">🎤 発音講座</div>
-      </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit2')" data-id="habit2">
-        <div class="habit-check"></div>
-        <div class="habit-label">📻 ラジオ英会話</div>
-      </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit3')" data-id="habit3">
-        <div class="habit-check"></div>
-        <div class="habit-label">🗣 英語に触れる</div>
-      </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit4')" data-id="habit4">
-        <div class="habit-check"></div>
-        <div class="habit-label">📚 読書</div>
-      </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit5')" data-id="habit5">
+  <!-- 時間帯タブ -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;">
+    <button class="time-tab active" onclick="switchTimeTab('morning',this)">🌅 朝</button>
+    <button class="time-tab" onclick="switchTimeTab('evening',this)">🌆 夕方</button>
+    <button class="time-tab" onclick="switchTimeTab('bath',this)">🛁 お風呂</button>
+    <button class="time-tab" onclick="switchTimeTab('night',this)">🌙 夜</button>
+  </div>
+
+  <!-- 朝 -->
+  <div class="time-panel active" id="panel-morning">
+    <div class="card">
+      <div class="habit-item" onclick="toggleHabit(this,'habit-朝散歩')" data-id="habit-朝散歩">
         <div class="habit-check"></div>
         <div class="habit-label">🌅 朝散歩</div>
       </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit6')" data-id="habit6">
+      <div class="habit-item" onclick="toggleHabit(this,'habit-ラジオ英会話')" data-id="habit-ラジオ英会話">
+        <div class="habit-check"></div>
+        <div class="habit-label">📻 ラジオ英会話</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit-英語に触れる')" data-id="habit-英語に触れる">
+        <div class="habit-check"></div>
+        <div class="habit-label">🗣 英語に触れる</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 夕方 -->
+  <div class="time-panel" id="panel-evening">
+    <div class="card">
+      <div class="habit-item" onclick="toggleHabit(this,'habit-読書')" data-id="habit-読書">
+        <div class="habit-check"></div>
+        <div class="habit-label">📚 読書</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit-ストレッチ')" data-id="habit-ストレッチ">
         <div class="habit-check"></div>
         <div class="habit-label">🧘 ストレッチ</div>
       </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit7')" data-id="habit7">
-        <div class="habit-check"></div>
-        <div class="habit-label">💖 自分を褒める</div>
+    </div>
+  </div>
+
+  <!-- お風呂 -->
+  <div class="time-panel" id="panel-bath">
+    <div class="card" style="background:linear-gradient(135deg,var(--white),var(--pink-light));border-color:var(--pink);">
+      <div style="font-size:13px;color:var(--pink-muted);text-align:center;margin-bottom:12px;font-weight:600;">
+        💪 YouTubeより発音講座！今日もやれる！
       </div>
-      <div class="habit-item" onclick="toggleHabit(this,'habit8')" data-id="habit8">
+      <div class="habit-item" onclick="toggleHabit(this,'habit-発音講座')" data-id="habit-発音講座">
+        <div class="habit-check"></div>
+        <div class="habit-label">🎤 発音講座</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 夜 -->
+  <div class="time-panel" id="panel-night">
+    <div class="card">
+      <div class="habit-item" onclick="toggleHabit(this,'habit-ジャーナリング')" data-id="habit-ジャーナリング">
+        <div class="habit-check"></div>
+        <div class="habit-label">📓 ジャーナリング</div>
+      </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit-感謝を書く')" data-id="habit-感謝を書く">
         <div class="habit-check"></div>
         <div class="habit-label">🙏 感謝を書く</div>
       </div>
+      <div class="habit-item" onclick="toggleHabit(this,'habit-自分を褒める')" data-id="habit-自分を褒める">
+        <div class="habit-check"></div>
+        <div class="habit-label">💖 自分を褒める</div>
+      </div>
     </div>
-
-    <button class="reset-btn" onclick="resetHabits()">今日の習慣をリセット</button>
   </div>
+
+  <button class="reset-btn" onclick="resetHabits()" style="margin-top:4px;">今日のチェックをリセット</button>
 </section>
 
 <!-- ═══════════════════════════════════
@@ -1010,7 +1100,12 @@ function glowItem(el) {
 // HABITS
 // ═══════════════════════════════════
 const HABIT_COUNT = 9;
-const todayKey = () => 'habits_' + new Date().toISOString().slice(0,10);
+const todayKey = () => {
+  const now = new Date();
+  // 日本時間で日付を作る（UTC+9）
+  const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  return 'habits_' + jst.toISOString().slice(0, 10);
+};
 
 function loadHabits() {
   const data = JSON.parse(localStorage.getItem(todayKey()) || '{}');
@@ -1051,7 +1146,7 @@ function updateHabitProgress() {
 }
 
 function resetHabits() {
-  if (!confirm('今日の習慣をリセットしますか？')) return;
+  if (!confirm('今日のチェックをリセットしますか？')) return;
   localStorage.removeItem(todayKey());
   document.querySelectorAll('.habit-item').forEach(item => {
     item.classList.remove('done');
@@ -1059,6 +1154,13 @@ function resetHabits() {
   });
   updateHabitProgress();
   updateTopProgress();
+}
+
+function switchTimeTab(name, btn) {
+  document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.time-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
 }
 
 // ═══════════════════════════════════
@@ -1305,6 +1407,104 @@ function spawnSparkles(el) {
 }
 
 // ═══════════════════════════════════
+// ═══════════════════════════════════
+// MORNING CALENDAR
+// ═══════════════════════════════════
+let calYear, calMonth;
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getMorningDays() {
+  return JSON.parse(localStorage.getItem('morning_days') || '[]');
+}
+
+function markMorningDone() {
+  const today = todayStr();
+  const days = getMorningDays();
+  if (!days.includes(today)) {
+    days.push(today);
+    localStorage.setItem('morning_days', JSON.stringify(days));
+    spawnSparkles(document.getElementById('morningDoneBtn'));
+  }
+  updateMorningDoneUI();
+  renderCalendar();
+}
+
+function updateMorningDoneUI() {
+  const today = todayStr();
+  const done = getMorningDays().includes(today);
+  const btn = document.getElementById('morningDoneBtn');
+  const msg = document.getElementById('morningDoneMsg');
+  if (done) {
+    btn.textContent = '✨ 今日はもう読みました';
+    btn.style.background = 'linear-gradient(135deg, var(--pink), var(--pink-muted))';
+    msg.textContent = '素晴らしい！今日もありがとう 🌸';
+    msg.style.color = 'var(--gold)';
+  } else {
+    btn.textContent = '🌸 今日読みました';
+    btn.style.background = '';
+    msg.textContent = '';
+  }
+}
+
+function renderCalendar() {
+  const now = new Date();
+  if (calYear === undefined) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
+
+  document.getElementById('calTitle').textContent = `${calYear}年 ${calMonth + 1}月`;
+
+  const days = getMorningDays();
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const todayISO = todayStr();
+
+  for (let i = 0; i < firstDay; i++) {
+    grid.appendChild(Object.assign(document.createElement('div'), { style: '' }));
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isDone = days.includes(iso);
+    const isToday = iso === todayISO;
+    const cell = document.createElement('div');
+    cell.style.cssText = `
+      width:100%; aspect-ratio:1; border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:12px; position:relative;
+      ${isDone ? 'background:linear-gradient(135deg,var(--pink),var(--gold));color:white;font-weight:700;' : 'color:var(--text-mid);'}
+      ${isToday && !isDone ? 'border:2px solid var(--gold);color:var(--gold);font-weight:700;' : ''}
+    `;
+    cell.textContent = d;
+    grid.appendChild(cell);
+  }
+
+  // 連続記録
+  let streak = 0;
+  const check = new Date();
+  while (true) {
+    const iso = check.toISOString().slice(0,10);
+    if (days.includes(iso)) { streak++; check.setDate(check.getDate()-1); }
+    else break;
+  }
+  const streakEl = document.getElementById('calStreak');
+  if (streak > 0) {
+    streakEl.textContent = `🔥 ${streak}日連続で読んでいます！`;
+  } else {
+    streakEl.textContent = '';
+  }
+}
+
+function changeCalMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
 // INIT
 // ═══════════════════════════════════
 loadHabits();
@@ -1312,6 +1512,8 @@ loadQuestions();
 loadNotes();
 buildWishList();
 updateTopProgress();
+updateMorningDoneUI();
+renderCalendar();
 </script>
 </body>
 </html>
